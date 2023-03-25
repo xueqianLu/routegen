@@ -172,9 +172,6 @@ func GetPairInfoFromStep(step *nebula.Step, routeStep *RouteStep) {
 	if fee, exist := step.Props[PairProp_fee]; exist {
 		routeStep.Fee = getValueofValue(fee)
 	}
-	if tracked, exist := step.Props[PairProp_tracked]; exist {
-		routeStep.Fee = getValueofValue(tracked)
-	}
 }
 
 type RouteStep struct {
