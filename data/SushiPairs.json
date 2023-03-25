@@ -1,0 +1,226 @@
+{
+  "data": {
+    "pairs": [
+      {
+        "id": "0x373345c3efa3fd836ad1d54afbd3c5eb86e12120",
+        "name": "EKTA v2-USDT",
+        "token0": {
+          "id": "0x45808ce43eb2d7685ff0242631f0feb6f3d8701a"
+        },
+        "token1": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x51f914a192a97408d991fdddafb8f8537c5ffb0a",
+        "name": "WBNB-ICE",
+        "token0": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "token1": {
+          "id": "0xf16e81dce15b08f326220742020379b855b87df9"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x2f56932cb53d8e292644da1a62ed58242b80510e",
+        "name": "USDT-WBNB",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x2905817b020fd35d9d09672946362b62766f0d69",
+        "name": "USDT-WBNB",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0xc7632b7b2d768bbb30a404e13e1de48d1439ec21",
+        "name": "USDC-WBNB",
+        "token0": {
+          "id": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x6da1ffd9d24e1753d2f46ca53146116c7210b3c5",
+        "name": "ETH-WBNB",
+        "token0": {
+          "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0xdc558d64c29721d74c4456cfb4363a6e6660a9bb",
+        "name": "WBNB-BUSD",
+        "token0": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x3d41ced5764340265d58ea4996f909eb05e25fdb",
+        "name": "CDT-WBNB",
+        "token0": {
+          "id": "0x0cbd6fadcf8096cc9a43d90b45f65826102e3ece"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x96337674d5545f357ba353aaa6312d614dcf20cc",
+        "name": "SUSHI-WBNB",
+        "token0": {
+          "id": "0x947950bcc74888a40ffa2593c5798f11fc9124c4"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0xf3bef87ca124ce4adabf6a29460cb8a100aa493c",
+        "name": "USDT-WBNB",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x0575eaf094b0abb8786daa82fce179a8dc79a530",
+        "name": "USDT-BUSD",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x9f38bf589be2e10ad45ced55afa50d668aeba2ee",
+        "name": "ARV-WBNB",
+        "token0": {
+          "id": "0x6679eb24f59dfe111864aec72b443d1da666b360"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x0287d4ad31ee015d02fbb6407aadce5d7adf9039",
+        "name": "USDT-USDC",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0xe0978ef5116084d8a667187f727447b2342cac53",
+        "name": "SUSHI-BUSD",
+        "token0": {
+          "id": "0x947950bcc74888a40ffa2593c5798f11fc9124c4"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0xc06949431e4e88cb50ad4df176dc409ab1c78fe2",
+        "name": "ETH-BTCB",
+        "token0": {
+          "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+        },
+        "token1": {
+          "id": "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x22530cf86986ef15f0a59288d37cc8c50efe3123",
+        "name": "WBNB-REEF",
+        "token0": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "token1": {
+          "id": "0xf21768ccbc73ea5b6fd3c687208a7c2def2d966e"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x9af6ca1ddd2057cf57d14cfe3e0ae14c21f7064f",
+        "name": "ADA-WBNB",
+        "token0": {
+          "id": "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x6eaec629b9cfa7acd507c50887c4851507da67e6",
+        "name": "USDT-BUSD",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x8c213a1479fc94d0f7af4c4e9129ba8e4b318352",
+        "name": "WBNB-UNI",
+        "token0": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "token1": {
+          "id": "0xbf5140a22578168fd562dccf235e5d43a02ce9b1"
+        },
+        "trackedReserveBNB": ""
+      },
+      {
+        "id": "0x70a164a8eccee2b7a1873af71efdfa82904f937d",
+        "name": "Cake-WBNB",
+        "token0": {
+          "id": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "trackedReserveBNB": ""
+      }
+    ]
+  }
+}
