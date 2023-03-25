@@ -13,8 +13,9 @@ type Token struct {
 type Pair struct {
 	norm.EModel
 	DexName       string `norm:"dex"`
-	PairAddress   string `norm:"paircontract"`
+	PairAddress   string `norm:"pairaddress"`
 	TrackedVolume string `norm:"tracked"`
+	Fee           string `norm:"fee"`
 	Token0        string `norm:"token0"`
 	Token1        string `norm:"token1"`
 }

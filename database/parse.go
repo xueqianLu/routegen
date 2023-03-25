@@ -14,8 +14,9 @@ var (
 
 const (
 	PairProp_dex          = "dex"
-	PairProp_paircontract = "paircontract"
+	PairProp_paircontract = "pairaddress"
 	PairProp_fee          = "fee"
+	PairProp_tracked      = "tracked"
 )
 
 // UnmarshalResultSet 解组 ResultSet 为传入的结构体

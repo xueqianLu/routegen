@@ -1,4 +1,6 @@
 {
+  "name":"SushiSwap",
+  "fee": "30",
   "data": {
     "pairs": [
       {

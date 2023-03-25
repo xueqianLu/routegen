@@ -21,7 +21,7 @@ func GetTokenName(client *ethclient.Client, address string) string {
 	contract, _ := erc20.NewErc20(addr, client)
 	name, err := contract.Name(callOpt)
 	if err != nil {
-		log.WithField("err", err).Error("get token name failed")
+		log.WithField("err", err).WithField("addr", address).Error("get token name failed")
 	}
 	return name
 }

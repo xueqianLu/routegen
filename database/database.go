@@ -31,12 +31,12 @@ func InsertToken(db *norm.DB, name string, address string) error {
 	}
 	err := db.InsertVertex(token)
 	if err != nil {
-		log.WithField("err", err).Error("insert token failed")
+		log.WithField("err", err).WithField("address", address).Error("insert token failed")
 	}
 	return err
 }
 
-func InsertPair(db *norm.DB, dexname string, pairaddr string, token0, token1 string) error {
+func InsertPair(db *norm.DB, dexname string, pairaddr string, fee string, tracked string, token0, token1 string) error {
 	pair := &models.Pair{
 		EModel: norm.EModel{
 			Src:       token0,
@@ -44,10 +44,12 @@ func InsertPair(db *norm.DB, dexname string, pairaddr string, token0, token1 str
 			Dst:       token1,
 			DstPolicy: constants.PolicyNothing,
 		},
-		DexName:     dexname,
-		Token1:      token1,
-		Token0:      token0,
-		PairAddress: pairaddr,
+		DexName:       dexname,
+		Token1:        token1,
+		Token0:        token0,
+		PairAddress:   pairaddr,
+		TrackedVolume: tracked,
+		Fee:           fee,
 	}
 	err := db.InsertEdge(pair)
 	if err != nil {
@@ -169,6 +171,9 @@ func GetPairInfoFromStep(step *nebula.Step, routeStep *RouteStep) {
 	}
 	if fee, exist := step.Props[PairProp_fee]; exist {
 		routeStep.Fee = getValueofValue(fee)
+	}
+	if tracked, exist := step.Props[PairProp_tracked]; exist {
+		routeStep.Fee = getValueofValue(tracked)
 	}
 }
 

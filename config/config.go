@@ -11,7 +11,7 @@ type Config struct {
 	DbSpace    string `toml:"db_space"`
 	DbUser     string `toml:"db_username"`
 	DbPasswd   string `toml:"db_password"`
-	GpcAddress string `toml:"grpc_addr"`
+	ServerAddr string `toml:"server_addr"`
 }
 
 var _cfg *Config = nil

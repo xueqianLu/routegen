@@ -1,4 +1,6 @@
 {
+    "name":"pancakeSwap",
+    "fee": "30",
     "data": {
         "pairs": [
             {

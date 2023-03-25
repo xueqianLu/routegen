@@ -29,7 +29,6 @@ import (
 	"github.com/xueqianLu/routegen/contracts"
 	"github.com/xueqianLu/routegen/database"
 	"github.com/xueqianLu/routegen/log"
-	"github.com/xueqianLu/routegen/types"
 	"github.com/zhihu/norm"
 	"io/ioutil"
 
@@ -37,8 +36,32 @@ import (
 )
 
 const (
-	urlFlag = "url"
+	urlFlag    = "url"
+	initDBFlag = "initdb"
 )
+
+type ImportToken struct {
+	Address string `json:"id"`
+	Name    string `json:"name"`
+}
+
+type ImportPairInfo struct {
+	Address      string      `json:"id"`
+	Name         string      `json:"name"`
+	TrackedValue string      `json:"trackedReserveBNB"`
+	Token0       ImportToken `json:"token0"`
+	Token1       ImportToken `json:"token1"`
+}
+
+type ImportPairs struct {
+	Pairs []ImportPairInfo `json:"pairs"`
+}
+
+type ImportData struct {
+	Name string      `json:"name"`
+	Fee  string      `json:"fee"`
+	Data ImportPairs `json:"data"`
+}
 
 // importCmd represents the import command
 var importCmd = &cobra.Command{
@@ -49,18 +72,30 @@ var importCmd = &cobra.Command{
 			log.Error("please enter import file")
 			return
 		}
-		datafile := args[0]
-		if utils.Exists(datafile) {
-			log.Info("import from file ", datafile)
-		} else {
-			log.Errorf("file (%s) not exist", datafile)
-			return
-		}
 		url, _ := cmd.PersistentFlags().GetString(urlFlag)
-		if err := ImportHandler(datafile, url); err != nil {
-			log.Error("import data failed")
-		} else {
-			log.Info("import finished")
+		initdb, _ := cmd.PersistentFlags().GetBool(initDBFlag)
+
+		db := database.NewDb(config.GetConfig())
+		if initdb {
+			if err := prepare(db); err != nil {
+				log.WithField("err", err).Fatalf("prepare db failed")
+				panic(err)
+			}
+			log.Infof("init db finished")
+		}
+
+		for _, datafile := range args {
+			if utils.Exists(datafile) {
+				log.Info("import from file ", datafile)
+			} else {
+				log.Errorf("file (%s) not exist", datafile)
+				continue
+			}
+			if err := ImportHandler(db, datafile, url); err != nil {
+				log.Error("import data from %s failed", datafile)
+			} else {
+				log.Infof("import data from %s finished", datafile)
+			}
 		}
 	},
 }
@@ -68,22 +103,21 @@ var importCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(importCmd)
 	importCmd.PersistentFlags().String(urlFlag, "https://rpc.ankr.com/bsc", "rpc url")
+	importCmd.PersistentFlags().Bool(initDBFlag, false, "init database")
 }
 
 func prepare(db *norm.DB) error {
 	createSchema := "" +
 		"CREATE TAG IF NOT EXISTS token(name string, address string);" +
-		"CREATE EDGE IF NOT EXISTS pair(dex string, tracked string, paircontract string, token0 string, token1 string);"
+		"CREATE EDGE IF NOT EXISTS pair(dex string, tracked string, fee string, pairaddress string, token0 string, token1 string);" +
+		"CREATE TAG INDEX token_index on token();" +
+		"CREATE EDGE INDEX pair_index on pair();"
 	_, err := db.Execute(createSchema)
 	return err
 }
 
-func ImportHandler(datafile string, url string) error {
-	db := database.NewDb(config.GetConfig())
-	if err := prepare(db); err != nil {
-		log.WithField("err", err).Fatalf("prepare db failed")
-		panic(err)
-	}
+func ImportHandler(db *norm.DB, datafile string, url string) error {
+
 	//return nil
 	client, err := ethclient.Dial(url)
 	if err != nil {
@@ -95,21 +129,35 @@ func ImportHandler(datafile string, url string) error {
 		log.WithField("err", err).Fatalf("read data file failed")
 		return err
 	}
-	var dexlist = make([]*types.DexData, 0)
-	err = json.Unmarshal(data, &dexlist)
+	var dexInfo = new(ImportData)
+	err = json.Unmarshal(data, &dexInfo)
 	if err != nil {
-		log.WithField("err", err).Fatalf("read data file failed")
+		//log.WithField("err", err).Fatalf("read data file failed")
 		return err
 	}
-	for _, dex := range dexlist {
-		for _, pair := range dex.Pairs {
-			name0 := contracts.GetTokenName(client, pair.Token0)
-			name1 := contracts.GetTokenName(client, pair.Token1)
-			_ = database.InsertToken(db, name0, pair.Token0)
-			_ = database.InsertToken(db, name1, pair.Token1)
-			_ = database.InsertPair(db, dex.Name, pair.Address, pair.Token0, pair.Token1)
+	dexName := dexInfo.Name
+	for _, pair := range dexInfo.Data.Pairs {
+		var name0, name1 = pair.Token0.Name, pair.Token1.Name
+		if len(name0) == 0 {
+			name0 = contracts.GetTokenName(client, pair.Token0.Address)
 		}
+		if len(name1) == 0 {
+			name1 = contracts.GetTokenName(client, pair.Token1.Address)
+		}
+
+		_ = database.InsertToken(db, name0, pair.Token0.Address)
+		_ = database.InsertToken(db, name1, pair.Token1.Address)
+		_ = database.InsertPair(db, dexName, pair.Address, dexInfo.Fee, pair.TrackedValue, pair.Token0.Address, pair.Token1.Address)
 	}
+	//for _, dex := range dexlist {
+	//	for _, pair := range dex.Pairs {
+	//		name0 := contracts.GetTokenName(client, pair.Token0)
+	//		name1 := contracts.GetTokenName(client, pair.Token1)
+	//		_ = database.InsertToken(db, name0, pair.Token0)
+	//		_ = database.InsertToken(db, name1, pair.Token1)
+	//		_ = database.InsertPair(db, dex.Name, pair.Address, pair.Token0, pair.Token1)
+	//	}
+	//}
 	db.Close()
 	return nil
 }
