@@ -1,0 +1,536 @@
+{
+	"name":"Uniswap-V3",
+	"fee":"30",
+  "data": {
+    "pairs": [
+      {
+        "id": "0x28df0835942396b7a1b7ae1cd068728e6ddbbafd",
+        "name": "BTCB-WBNB",
+        "trackedReserveBNB": "5946414010839071887513",
+        "token0": {
+          "id": "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x6fe9e9de56356f7edbfcbb29fab7cd69471a4869",
+        "name": "USDT-WBNB",
+        "trackedReserveBNB": "586958884432431388413638",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x32776ed4d96ed069a2d812773f0ad8ad9ef83cf8",
+        "name": "WBNB-BUSD",
+        "trackedReserveBNB": "238541701484154190346872",
+        "token0": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        }
+      },
+      {
+        "id": "0x4fb87838a29b37598099ef5aa6b3fbeeef987c50",
+        "name": "ETH-WBNB",
+        "trackedReserveBNB": "14974016275113033987581",
+        "token0": {
+          "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x7862d9b4be2156b15d54f41ee4ede2d5b0b455e4",
+        "name": "USDT-WBNB",
+        "trackedReserveBNB": "182106451840073893617882",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x3fb2623567e21f8c50f0ae86f54ef4849b4eb47b",
+        "name": "ETH-BTCB",
+        "trackedReserveBNB": "265146210216461197555",
+        "token0": {
+          "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+        },
+        "token1": {
+          "id": "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+        }
+      },
+      {
+        "id": "0x107c1dcb81234146400c96bc3e1252b42cde7d3e",
+        "name": "USDT-TPT",
+        "trackedReserveBNB": "549779131993569383",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xeca41281c24451168a37211f0bc2b8645af45092"
+        }
+      },
+      {
+        "id": "0x84e47c7f2fe86f6b5efbe14fee46b8bb871b2e05",
+        "name": "USDT-BUSD",
+        "trackedReserveBNB": "298570827340133192252031278",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        }
+      },
+      {
+        "id": "0xe39cfc1a2e51a09ecbd060a24ee4eef5a97697bb",
+        "name": "TEM-WBNB",
+        "trackedReserveBNB": "466108025684797782",
+        "token0": {
+          "id": "0x19e6bfc1a6e4b042fb20531244d47e252445df01"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x2c3c320d49019d4f9a92352e947c7e5acfe47d68",
+        "name": "USDT-USDC",
+        "trackedReserveBNB": "51318214341043929115475756",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+        }
+      },
+      {
+        "id": "0x7f9d307973cdabe42769d9712df8ee1cc1a28d10",
+        "name": "LVL-WBNB",
+        "trackedReserveBNB": "25801058428509056621772",
+        "token0": {
+          "id": "0xb64e280e9d1b5dbec4accedb2257a87b400db149"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0xd0a5e2818a23e2054449982fb9ff9575867cf92b",
+        "name": "ID-USDT",
+        "trackedReserveBNB": "192263156408955664166250",
+        "token0": {
+          "id": "0x2dff88a56767223a5529ea5960da7a3f5f766406"
+        },
+        "token1": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        }
+      },
+      {
+        "id": "0xccdfcd1aac447d5b29980f64b831c532a6a33726",
+        "name": "USDT-USDC",
+        "trackedReserveBNB": "21733760124110532373820471",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+        }
+      },
+      {
+        "id": "0xad0794fe6598282878bd21421570ef86670ef7c4",
+        "name": "CCDAO-TPT",
+        "trackedReserveBNB": "3863603309973563595",
+        "token0": {
+          "id": "0x200f73aba0d6f8919086f64035ef900669ea2de2"
+        },
+        "token1": {
+          "id": "0xeca41281c24451168a37211f0bc2b8645af45092"
+        }
+      },
+      {
+        "id": "0xac18e282c0b89a9981520e148ddd2bf9592e440c",
+        "name": "USDC-BUSD",
+        "trackedReserveBNB": "98382645747983026755264353",
+        "token0": {
+          "id": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        }
+      },
+      {
+        "id": "0xb117244650a2741b40871256dca355e3903b3f48",
+        "name": "GHNY-WBNB",
+        "trackedReserveBNB": "369636662295624215075",
+        "token0": {
+          "id": "0xa045e37a0d1dd3a45fefb8803d22457abc0a728a"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x8a2cda336a21420993a013da3055ed650c4b99ed",
+        "name": "USDC-BUSD",
+        "trackedReserveBNB": "36608032878118404237312286",
+        "token0": {
+          "id": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        }
+      },
+      {
+        "id": "0xc98f01bf2141e1140ef8f8cad99d4b021d10718f",
+        "name": "USDT-BUSD",
+        "trackedReserveBNB": "47777522638956755443642031",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        }
+      },
+      {
+        "id": "0x6bcb0ba386e9de0c29006e46b2f01f047ca1806e",
+        "name": "USDC-WBNB",
+        "trackedReserveBNB": "11662528838139880966985",
+        "token0": {
+          "id": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x0f338ec12d3f7c3d77a4b9fcc1f95f3fb6ad0ea6",
+        "name": "ETH-WBNB",
+        "trackedReserveBNB": "1135349700308628006824",
+        "token0": {
+          "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0xc87040ca835aad5628ed9605c1815a32c8ce842a",
+        "name": "TRVL-BUSD",
+        "trackedReserveBNB": "452318932688187947423320",
+        "token0": {
+          "id": "0x6a8fd46f88dbd7bdc2d536c604f811c63052ce0f"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        }
+      },
+      {
+        "id": "0x44d23658a5d5ce0e7e12007b67748f07c4fad4f9",
+        "name": "CCDAO-WBNB",
+        "trackedReserveBNB": "57598066891702378310396",
+        "token0": {
+          "id": "0x200f73aba0d6f8919086f64035ef900669ea2de2"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0xf422a9292434e4592ea044177e89939b9d7bd881",
+        "name": "ID-WBNB",
+        "trackedReserveBNB": "1883083716939156398945",
+        "token0": {
+          "id": "0x2dff88a56767223a5529ea5960da7a3f5f766406"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x20a0120fe770cf1354bf9c991178d653639757cd",
+        "name": "BOB-WBNB",
+        "trackedReserveBNB": "6881681063679764095483",
+        "token0": {
+          "id": "0xb0b195aefa3650a6908f15cdac7d92f8a5791b0b"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x24090715e4ac1e3003497c8a7903aaf34c3f7ca4",
+        "name": "GPT-WBNB",
+        "trackedReserveBNB": "20542552722705270940350",
+        "token0": {
+          "id": "0x153c0c947177e631e3dfc594ba28750d3a921fb5"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x554548b404213c7efcdbab933f52edfe3c581834",
+        "name": "WBNB-UNI",
+        "trackedReserveBNB": "3056173513311025049831",
+        "token0": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        },
+        "token1": {
+          "id": "0xbf5140a22578168fd562dccf235e5d43a02ce9b1"
+        }
+      },
+      {
+        "id": "0xb873e889f28e3d2c86f2495820dd5eca329bddf4",
+        "name": "CCDAO-USDT",
+        "trackedReserveBNB": "1667936650319031679793418",
+        "token0": {
+          "id": "0x200f73aba0d6f8919086f64035ef900669ea2de2"
+        },
+        "token1": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        }
+      },
+      {
+        "id": "0x4444aa182e3bfb91c2af7ed3b28c8894c12f11d1",
+        "name": "OK-USDT",
+        "trackedReserveBNB": "134018587679443314927673",
+        "token0": {
+          "id": "0x523821d20a283d955f6205b4c9252779cd0f964b"
+        },
+        "token1": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        }
+      },
+      {
+        "id": "0xfdd6b85018a781922eb7babf4c1510e98e1d992d",
+        "name": "PMON-WBNB",
+        "trackedReserveBNB": "558732416106416195763",
+        "token0": {
+          "id": "0x1796ae0b0fa4862485106a0de9b654efe301d0b2"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x7bbce1442cae0ce3eb79c12b8b0032dff93e1ae7",
+        "name": "ERC20-USDC",
+        "trackedReserveBNB": "468035332716337962064919",
+        "token0": {
+          "id": "0x58730ae0faa10d73b0cddb5e7b87c3594f7a20cb"
+        },
+        "token1": {
+          "id": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+        }
+      },
+      {
+        "id": "0x4ef938b633d704f29e593a8b51148d43429d0bc4",
+        "name": "TWT-USDT",
+        "trackedReserveBNB": "63610479431859012787339",
+        "token0": {
+          "id": "0x4b0f1812e5df2a09796481ff14017e6005508003"
+        },
+        "token1": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        }
+      },
+      {
+        "id": "0x86dfe4b08aa49fca327455de172abea42a2e21dc",
+        "name": "EPIK-WBNB",
+        "trackedReserveBNB": "12472056987896931118048",
+        "token0": {
+          "id": "0x368ce786ea190f32439074e8d22e12ecb718b44c"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x17507bef4c3abc1bc715be723ee1baf571256e05",
+        "name": "ETH-USDC",
+        "trackedReserveBNB": "992136643877604809734",
+        "token0": {
+          "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+        },
+        "token1": {
+          "id": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+        }
+      },
+      {
+        "id": "0xf83c3a176f732aa7b705b05676dfb1235824132d",
+        "name": "USDV-BUSD",
+        "trackedReserveBNB": "5002743799279293069",
+        "token0": {
+          "id": "0x9a5350edf28c1f93bb36d6e94b5c425fde8e222d"
+        },
+        "token1": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        }
+      },
+      {
+        "id": "0xfdc0fa517a4174d5f9795cb8b009e8c1acff6f1e",
+        "name": "BUSD-PPAY",
+        "trackedReserveBNB": "1348803156691136005800384",
+        "token0": {
+          "id": "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+        },
+        "token1": {
+          "id": "0xfb288d60d3b66f9c3e231a9a39ed3f158a4269aa"
+        }
+      },
+      {
+        "id": "0x58baa797b4605676a275118b52d83a77efefe77a",
+        "name": "SDAO-WBNB",
+        "trackedReserveBNB": "5648567452129345698778",
+        "token0": {
+          "id": "0x90ed8f1dc86388f14b64ba8fb4bbd23099f18240"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0xe920985aa7ea6e6eb4eb72d09eedd743005262c4",
+        "name": "ID-WBNB",
+        "trackedReserveBNB": "624242714281363554887",
+        "token0": {
+          "id": "0x2dff88a56767223a5529ea5960da7a3f5f766406"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0xb5b41135ed9b99ffc2b6f2ac8df579d16204f328",
+        "name": "CCDAO-TPT",
+        "trackedReserveBNB": "2030360897372774830",
+        "token0": {
+          "id": "0x200f73aba0d6f8919086f64035ef900669ea2de2"
+        },
+        "token1": {
+          "id": "0xeca41281c24451168a37211f0bc2b8645af45092"
+        }
+      },
+      {
+        "id": "0xfd6e5b7c30538dff2752058e425ad01a56b831cc",
+        "name": "BTCB-WBNB",
+        "trackedReserveBNB": "7546410077535913909",
+        "token0": {
+          "id": "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x723b48f6a706e059d5ab9a7277f72d3147998dac",
+        "name": "USDT-TS",
+        "trackedReserveBNB": "14092763201744894981291",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0x91dc92be0bfc47db50790949f423b62282887292"
+        }
+      },
+      {
+        "id": "0x14ff311bc60be9347b8c29798f0f0fb6f0f768b3",
+        "name": "USDT-BFG",
+        "trackedReserveBNB": "360425833969616622301440",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xbb46693ebbea1ac2070e59b4d043b47e2e095f86"
+        }
+      },
+      {
+        "id": "0x7b9f1b263a25c68cfe942953796e414eaddde1a1",
+        "name": "ID-USDT",
+        "trackedReserveBNB": "10536575105491737947929",
+        "token0": {
+          "id": "0x2dff88a56767223a5529ea5960da7a3f5f766406"
+        },
+        "token1": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        }
+      },
+      {
+        "id": "0x88d5d659c97fd4473a56c61e450238b5b4f5320c",
+        "name": "USDT-GLCH",
+        "trackedReserveBNB": "75480825506299728967394",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xf0902eb0049a4003793bab33f3566a22d2834442"
+        }
+      },
+      {
+        "id": "0x48f47c20a7713e3181cd9a7da3344b66fbf706be",
+        "name": "USDT-ERC20",
+        "trackedReserveBNB": "119604322095677897006615",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0x58730ae0faa10d73b0cddb5e7b87c3594f7a20cb"
+        }
+      },
+      {
+        "id": "0xa09c05a47288d638e66100aac3afb1896d922abc",
+        "name": "USDT-LNR",
+        "trackedReserveBNB": "34206956801265579875175",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0xc1a59a17f87ba6651eb8e8f707db7672647c45bd"
+        }
+      },
+      {
+        "id": "0x2cd97604ef77bbcb1fa0cff47545dff8ec7def08",
+        "name": "TWT-WBNB",
+        "trackedReserveBNB": "1234813680979235188072",
+        "token0": {
+          "id": "0x4b0f1812e5df2a09796481ff14017e6005508003"
+        },
+        "token1": {
+          "id": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+        }
+      },
+      {
+        "id": "0x2cf9a89de7b86273d4c7db9416c0ef160de136c1",
+        "name": "USDT-BTCB",
+        "trackedReserveBNB": "58690987588214136916",
+        "token0": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        },
+        "token1": {
+          "id": "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+        }
+      },
+      {
+        "id": "0x87c029bbb64c39a2a6762ac0e031757d2974e275",
+        "name": "ETH-USDT",
+        "trackedReserveBNB": "0",
+        "token0": {
+          "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+        },
+        "token1": {
+          "id": "0x55d398326f99059ff775485246999027b3197955"
+        }
+      }
+    ]
+  }
+}

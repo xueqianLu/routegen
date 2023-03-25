@@ -68,10 +68,10 @@ var importCmd = &cobra.Command{
 	Use:   "import",
 	Short: "Import data to database",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			log.Error("please enter import file")
-			return
-		}
+		//if len(args) == 0 {
+		//	log.Error("please enter import file")
+		//	return
+		//}
 		url, _ := cmd.PersistentFlags().GetString(urlFlag)
 		initdb, _ := cmd.PersistentFlags().GetBool(initDBFlag)
 
