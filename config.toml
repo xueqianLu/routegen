@@ -1,0 +1,5 @@
+db_host = ""
+db_space = ""
+db_username = ""
+db_password = ""
+server_addr = "127.0.0.1:9800"
