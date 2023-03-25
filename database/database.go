@@ -6,6 +6,7 @@ import (
 	"github.com/xueqianLu/routegen/config"
 	"github.com/xueqianLu/routegen/database/models"
 	"github.com/xueqianLu/routegen/log"
+	"github.com/xueqianLu/routegen/types"
 	"github.com/zhihu/norm"
 	"github.com/zhihu/norm/constants"
 	"github.com/zhihu/norm/dialectors"
@@ -162,7 +163,7 @@ func GetDstFromStep(step *nebula.Step) string {
 	return getValueofValue(step.Dst.GetVid())
 }
 
-func GetPairInfoFromStep(step *nebula.Step, routeStep *RouteStep) {
+func GetPairInfoFromStep(step *nebula.Step, routeStep *types.RouteStep) {
 	if dex, exist := step.Props[PairProp_dex]; exist {
 		routeStep.Dex = getValueofValue(dex)
 	}
@@ -174,25 +175,13 @@ func GetPairInfoFromStep(step *nebula.Step, routeStep *RouteStep) {
 	}
 }
 
-type RouteStep struct {
-	Pair string `json:"pair"`
-	Dex  string `json:"dex"`
-	Src  string `json:"from"`
-	Dst  string `json:"to"`
-	Fee  string `json:"fee"`
-}
-
-type TokenRoute struct {
-	Steps []RouteStep `json:"steps"`
-}
-
-func ParsePathInfo(path *nebula.Path) []RouteStep {
+func ParsePathInfo(path *nebula.Path) []types.RouteStep {
 	src := path.GetSrc()
 	steps := path.GetSteps()
-	routePath := make([]RouteStep, len(steps))
+	routePath := make([]types.RouteStep, len(steps))
 	srcToken := getValueofValue(src.Vid)
 	for i, step := range steps {
-		routeStep := RouteStep{
+		routeStep := types.RouteStep{
 			Src: srcToken,
 		}
 		routeStep.Dst = GetDstFromStep(step)
@@ -203,28 +192,28 @@ func ParsePathInfo(path *nebula.Path) []RouteStep {
 	return routePath
 }
 
-func QueryRoute(db *norm.DB, token0, token1 string) []*TokenRoute {
+func QueryRoute(db *norm.DB, token0, token1 string) []*types.TokenRoute {
 	nql := fmt.Sprintf("FIND NOLOOP PATH WITH PROP FROM \"%s\" TO \"%s\" OVER * YIELD path AS p", token0, token1)
 	result := make([]map[string]interface{}, 0)
 	res, err := db.Debug().Execute(nql)
 	if err != nil {
 		log.WithField("err", err).Error("query route failed")
-		return []*TokenRoute{}
+		return []*types.TokenRoute{}
 	} else {
 		//log.WithField("rows", len(res.GetRows())).Info("query route")
 		err := UnmarshalResultSet(res, &result)
 		if err != nil {
 			log.WithField("err", err).Error("parse route failed")
-			return []*TokenRoute{}
+			return []*types.TokenRoute{}
 		}
-		paths := make([]*TokenRoute, 0, len(result))
+		paths := make([]*types.TokenRoute, 0, len(result))
 
 		for _, vpath := range result {
 			// vpath only have one key (AS p)
 			for _, v := range vpath {
 				if path, ok := v.(*nebula.Path); ok {
 					steps := ParsePathInfo(path)
-					tokenRoute := new(TokenRoute)
+					tokenRoute := new(types.TokenRoute)
 					tokenRoute.Steps = steps
 					paths = append(paths, tokenRoute)
 				}

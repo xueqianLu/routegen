@@ -21,39 +21,14 @@ THE SOFTWARE.
 */
 package types
 
-import (
-	"fmt"
-	"github.com/ethereum/go-ethereum/common"
-	"math/big"
-)
-
-type Token struct {
-	Name     string         `json:"name"`
-	Contract common.Address `json:"contract"`
+type RouteStep struct {
+	Pair string `json:"pair"`
+	Dex  string `json:"dex"`
+	Src  string `json:"from"`
+	Dst  string `json:"to"`
+	Fee  string `json:"fee"`
 }
 
-type Pair struct {
-	TokenIn       Token    `json:"token_in"`
-	TokenOut      Token    `json:"token_out"`
-	TrackedVolume *big.Int `json:"tracked_volume"`
-}
-
-func (p Pair) String() string {
-	return fmt.Sprintf("%s_%s", p.TokenIn.Name, p.TokenOut.Name)
-}
-
-type Dex struct {
-	Name  string  `json:"name"`
-	Pairs []*Pair `json:"pairs"`
-}
-
-type RouteOne struct {
-	RouteDex  *Dex  `json:"route_dex"`
-	RoutePair *Pair `json:"route_pair"`
-}
-
-type Route struct {
-	TokenIn   Token       `json:"token_in"`
-	TokenOut  Token       `json:"token_out"`
-	RoutePath []*RouteOne `json:"route_path"`
+type TokenRoute struct {
+	Steps []RouteStep `json:"steps"`
 }

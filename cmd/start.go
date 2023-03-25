@@ -22,23 +22,23 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/xueqianLu/routegen/log"
+	"github.com/xueqianLu/routegen/service"
+	"github.com/xueqianLu/routegen/service/backend"
 )
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Boot up a http server as a service",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("start called")
+		if err := backend.SetupBackend(); err != nil {
+			log.Fatalf("setup backend failed with err:(%s)", err)
+			return
+		}
+		service.StartServier()
+		log.Info("server exited")
 	},
 }
 
