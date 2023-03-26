@@ -35,6 +35,7 @@ import (
 	"io/ioutil"
 	"os"
 	"sync"
+	"time"
 )
 
 const (
@@ -94,7 +95,7 @@ func init() {
 	rootCmd.AddCommand(dumpCmd)
 	dumpCmd.PersistentFlags().String(outputFlag, "dump.txt", "out put filename")
 	dumpCmd.PersistentFlags().Int(maxOpFlag, 4, "max jump for token swap route")
-	dumpCmd.PersistentFlags().Uint(routineFlag, 10, "routine count to dump route file")
+	dumpCmd.PersistentFlags().Uint(routineFlag, 5, "routine count to dump route file")
 }
 
 func convertPathToString(routes []*types.TokenRoute) []string {
@@ -124,6 +125,7 @@ func convertPathToString(routes []*types.TokenRoute) []string {
 
 func DumpHandler(db *norm.DB, routine uint, tokens []string, dumpfile string, maxOp int) error {
 	worker := NewWorker(db, routine)
+	worker.Start()
 	return worker.DumpRouteToFile(dumpfile, tokens, maxOp)
 }
 
@@ -135,10 +137,13 @@ type Worker struct {
 func NewWorker(db *norm.DB, rountines uint) *Worker {
 	task := tool.NewTasks(rountines, func(t interface{}) {
 		item := t.(Item)
+		//log.Infof("got task item %s->%s", item.token0, item.token1)
 		paths := database.QueryRouteWithMaxJump(db, item.token0, item.token1, item.maxOp)
+		//log.Infof("got token path %d", len(paths))
 		data := convertPathToString(paths)
 		for _, str := range data {
 			item.response <- str
+			//log.Infof("write route to response")
 		}
 	})
 	return &Worker{task: task}
@@ -161,17 +166,28 @@ func (w Worker) DumpRouteToFile(dumpfile string, tokens []string, maxOp int) err
 		return err
 	}
 	defer fp.Close()
+	log.Infof("total token %d", len(tokens))
 
 	results := make(chan string, 10000000)
+	writeFinished := false
 
 	go func() {
+		var count = 0
 		for {
 			select {
 			case s, ok := <-results:
 				if !ok {
+					writeFinished = true
+					log.Infof("total write to file count %d", count)
 					return
 				}
 				_, err = fp.WriteString(s)
+				count += 1
+				if (count % 200) == 0 {
+					log.Infof("write to file count %d", count)
+					fp.Sync()
+				}
+				//log.Infof("consume routine write to file")
 				if err != nil {
 					log.WithField("err", err).Error("write to file failed")
 					return
@@ -196,21 +212,27 @@ func (w Worker) DumpRouteToFile(dumpfile string, tokens []string, maxOp int) err
 					token1:   token1,
 					maxOp:    op,
 				}
+				//log.Debugf("add item to task")
 				if e := w.task.AddTask(item); e != nil {
 					err = e
-				}
-				data := <-res
-				switch msg := (data).(type) {
-				case error:
-					err = msg
-				case string:
-					results <- msg
+				} else {
+					data := <-res
+					switch msg := (data).(type) {
+					case error:
+						err = msg
+					case string:
+						results <- msg
+					}
 				}
 			}(tokens[i], tokens[j], maxOp)
 		}
 	}
 	wg.Wait()
 	close(results)
+	for !writeFinished {
+		log.Info("wait write file finish")
+		time.Sleep(time.Second)
+	}
 
 	return err
 }
