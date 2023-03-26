@@ -226,7 +226,8 @@ func QueryRoute(db *norm.DB, token0, token1 string) []*types.TokenRoute {
 func QueryRouteWithMaxJump(db *norm.DB, token0, token1 string, op int) []*types.TokenRoute {
 	nql := fmt.Sprintf("FIND NOLOOP PATH WITH PROP FROM \"%s\" TO \"%s\" OVER * UPTO %d STEPS YIELD path AS p", token0, token1, op)
 	result := make([]map[string]interface{}, 0)
-	res, err := db.Debug().Execute(nql)
+	res, err := db.Execute(nql)
+	//res, err := db.Debug().Execute(nql)
 	if err != nil {
 		log.WithField("err", err).Error("query route failed")
 		return []*types.TokenRoute{}

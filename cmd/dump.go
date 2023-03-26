@@ -29,15 +29,18 @@ import (
 	"github.com/xueqianLu/routegen/config"
 	"github.com/xueqianLu/routegen/database"
 	"github.com/xueqianLu/routegen/log"
+	"github.com/xueqianLu/routegen/tool"
 	"github.com/xueqianLu/routegen/types"
 	"github.com/zhihu/norm"
 	"io/ioutil"
 	"os"
+	"sync"
 )
 
 const (
-	outputFlag = "out"
-	maxOpFlag  = "op"
+	outputFlag  = "out"
+	maxOpFlag   = "op"
+	routineFlag = "routine"
 )
 
 // dumpCmd represents the dump command
@@ -77,8 +80,9 @@ var dumpCmd = &cobra.Command{
 		}
 		output, _ := cmd.PersistentFlags().GetString(outputFlag)
 		op, _ := cmd.PersistentFlags().GetInt(maxOpFlag)
+		routine, _ := cmd.PersistentFlags().GetUint(routineFlag)
 
-		if err := DumpHandler(db, tokenList, output, op); err != nil {
+		if err := DumpHandler(db, routine, tokenList, output, op); err != nil {
 			log.Errorf("dump token route failed with err:(%s)", err)
 		} else {
 			log.Info("dump token route finished")
@@ -90,6 +94,7 @@ func init() {
 	rootCmd.AddCommand(dumpCmd)
 	dumpCmd.PersistentFlags().String(outputFlag, "dump.txt", "out put filename")
 	dumpCmd.PersistentFlags().Int(maxOpFlag, 4, "max jump for token swap route")
+	dumpCmd.PersistentFlags().Uint(routineFlag, 10, "routine count to dump route file")
 }
 
 func convertPathToString(routes []*types.TokenRoute) []string {
@@ -117,31 +122,95 @@ func convertPathToString(routes []*types.TokenRoute) []string {
 
 }
 
-func DumpHandler(db *norm.DB, tokens []string, dumpfile string, maxOp int) error {
+func DumpHandler(db *norm.DB, routine uint, tokens []string, dumpfile string, maxOp int) error {
+	worker := NewWorker(db, routine)
+	return worker.DumpRouteToFile(dumpfile, tokens, maxOp)
+}
+
+type Worker struct {
+	task *tool.Tasks
+	db   *norm.DB
+}
+
+func NewWorker(db *norm.DB, rountines uint) *Worker {
+	task := tool.NewTasks(rountines, func(t interface{}) {
+		item := t.(Item)
+		paths := database.QueryRouteWithMaxJump(db, item.token0, item.token1, item.maxOp)
+		data := convertPathToString(paths)
+		for _, str := range data {
+			item.response <- str
+		}
+	})
+	return &Worker{task: task}
+}
+
+func (w Worker) Start() {
+	w.task.Run()
+}
+
+type Item struct {
+	token0, token1 string
+	maxOp          int
+	response       chan interface{}
+}
+
+func (w Worker) DumpRouteToFile(dumpfile string, tokens []string, maxOp int) error {
 	fp, err := os.OpenFile(dumpfile, os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModeAppend|os.ModePerm) // 读写方式打开
 	if err != nil {
 		log.WithField("err", err).WithField("file", dumpfile).Error("open file failed")
 		return err
 	}
 	defer fp.Close()
-	log.Infof("dump token route, token count %d", len(tokens))
 
+	results := make(chan string, 10000000)
+
+	go func() {
+		for {
+			select {
+			case s, ok := <-results:
+				if !ok {
+					return
+				}
+				_, err = fp.WriteString(s)
+				if err != nil {
+					log.WithField("err", err).Error("write to file failed")
+					return
+				}
+			}
+		}
+	}()
+
+	wg := sync.WaitGroup{}
 	for i := 0; i < len(tokens); i++ {
 		for j := 0; j < len(tokens); j++ {
 			if i == j {
 				continue
 			}
-			paths := database.QueryRouteWithMaxJump(db, tokens[i], tokens[j], maxOp)
-			data := convertPathToString(paths)
-			for _, str := range data {
-				_, err = fp.WriteString(str)
-				if err != nil {
-					log.WithField("err", err).Error("write to file failed")
-					return err
+			wg.Add(1)
+			go func(token0, token1 string, op int) {
+				defer wg.Done()
+				res := make(chan interface{})
+				item := Item{
+					response: res,
+					token0:   token0,
+					token1:   token1,
+					maxOp:    op,
 				}
-
-			}
+				if e := w.task.AddTask(item); e != nil {
+					err = e
+				}
+				data := <-res
+				switch msg := (data).(type) {
+				case error:
+					err = msg
+				case string:
+					results <- msg
+				}
+			}(tokens[i], tokens[j], maxOp)
 		}
 	}
-	return nil
+	wg.Wait()
+	close(results)
+
+	return err
 }
