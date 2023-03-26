@@ -222,3 +222,34 @@ func QueryRoute(db *norm.DB, token0, token1 string) []*types.TokenRoute {
 		return paths
 	}
 }
+
+func QueryRouteWithMaxJump(db *norm.DB, token0, token1 string, op int) []*types.TokenRoute {
+	nql := fmt.Sprintf("FIND NOLOOP PATH WITH PROP FROM \"%s\" TO \"%s\" OVER * UPTO %d STEPS YIELD path AS p", token0, token1, op)
+	result := make([]map[string]interface{}, 0)
+	res, err := db.Debug().Execute(nql)
+	if err != nil {
+		log.WithField("err", err).Error("query route failed")
+		return []*types.TokenRoute{}
+	} else {
+		//log.WithField("rows", len(res.GetRows())).Info("query route")
+		err := UnmarshalResultSet(res, &result)
+		if err != nil {
+			log.WithField("err", err).Error("parse route failed")
+			return []*types.TokenRoute{}
+		}
+		paths := make([]*types.TokenRoute, 0, len(result))
+
+		for _, vpath := range result {
+			// vpath only have one key (AS p)
+			for _, v := range vpath {
+				if path, ok := v.(*nebula.Path); ok {
+					steps := ParsePathInfo(path)
+					tokenRoute := new(types.TokenRoute)
+					tokenRoute.Steps = steps
+					paths = append(paths, tokenRoute)
+				}
+			}
+		}
+		return paths
+	}
+}

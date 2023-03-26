@@ -37,6 +37,7 @@ import (
 
 const (
 	outputFlag = "out"
+	maxOpFlag  = "op"
 )
 
 // dumpCmd represents the dump command
@@ -75,8 +76,9 @@ var dumpCmd = &cobra.Command{
 			tokenList = append(tokenList, token)
 		}
 		output, _ := cmd.PersistentFlags().GetString(outputFlag)
+		op, _ := cmd.PersistentFlags().GetInt(maxOpFlag)
 
-		if err := DumpHandler(db, tokenList, output); err != nil {
+		if err := DumpHandler(db, tokenList, output, op); err != nil {
 			log.Errorf("dump token route failed with err:(%s)", err)
 		} else {
 			log.Info("dump token route finished")
@@ -87,6 +89,7 @@ var dumpCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(dumpCmd)
 	dumpCmd.PersistentFlags().String(outputFlag, "dump.txt", "out put filename")
+	dumpCmd.PersistentFlags().Int(maxOpFlag, 4, "max jump for token swap route")
 }
 
 func convertPathToString(routes []*types.TokenRoute) []string {
@@ -114,20 +117,21 @@ func convertPathToString(routes []*types.TokenRoute) []string {
 
 }
 
-func DumpHandler(db *norm.DB, tokens []string, dumpfile string) error {
+func DumpHandler(db *norm.DB, tokens []string, dumpfile string, maxOp int) error {
 	fp, err := os.OpenFile(dumpfile, os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModeAppend|os.ModePerm) // 读写方式打开
 	if err != nil {
 		log.WithField("err", err).WithField("file", dumpfile).Error("open file failed")
 		return err
 	}
 	defer fp.Close()
+	log.Infof("dump token route, token count %d", len(tokens))
 
 	for i := 0; i < len(tokens); i++ {
 		for j := 0; j < len(tokens); j++ {
 			if i == j {
 				continue
 			}
-			paths := database.QueryRoute(db, tokens[i], tokens[j])
+			paths := database.QueryRouteWithMaxJump(db, tokens[i], tokens[j], maxOp)
 			data := convertPathToString(paths)
 			for _, str := range data {
 				_, err = fp.WriteString(str)
