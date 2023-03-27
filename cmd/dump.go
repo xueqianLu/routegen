@@ -170,16 +170,75 @@ func NewWorker(rountines uint, maxroute int) *Worker {
 	return w
 }
 
+func (w *Worker) trimRoutes(paths []*types.TokenRoute) []*types.TokenRoute {
+	if len(paths) > w.maxroute {
+		sort.Sort(types.SortTokenRoutes(paths))
+		paths = paths[:w.maxroute]
+	}
+	return paths
+}
+
+// 1.
+
+func TransferTokenEqual(sa, sb types.RouteStep) bool {
+	return (sa.Src == sb.Src) && (sa.Dst == sb.Dst)
+}
+
+func (w *Worker) mergeRoute(mergedRoute *types.TokenRoute, otherRoutes []*types.TokenRoute) []*types.TokenRoute {
+	for i := 0; i < len(otherRoutes); {
+		otherLen := len(otherRoutes)
+		otherRoute := otherRoutes[i]
+		var merged = false
+		if len(mergedRoute.Steps) == len(otherRoute.Steps) {
+			{
+				// 合并相同币种的不同池子路由
+				equalSrcDst := true
+				for idx := 0; idx < len(mergedRoute.Steps); idx++ {
+					if !TransferTokenEqual(mergedRoute.Steps[idx], otherRoute.Steps[idx]) {
+						equalSrcDst = false
+						break
+					}
+				}
+				if equalSrcDst {
+					for idx := 0; idx < len(mergedRoute.Steps); idx++ {
+						mergedRoute.Steps[idx].Pairs = append(mergedRoute.Steps[idx].Pairs, otherRoute.Steps[idx].Pairs...)
+					}
+					merged = true
+				}
+			}
+
+			if merged {
+				otherRoutes[i] = otherRoutes[otherLen-1]
+				otherRoutes = otherRoutes[:otherLen-1]
+			} else {
+				i++
+			}
+		} else {
+			i++
+		}
+	}
+	return otherRoutes
+}
+
+func (w *Worker) MergeRoutes(paths []*types.TokenRoute) []*types.TokenRoute {
+	mergedRoutes := make([]*types.TokenRoute, 0)
+	for index := 0; index < len(paths); index++ {
+		mergerRoute := paths[index]
+		paths = w.mergeRoute(mergerRoute, paths[index+1:])
+		mergedRoutes = append(mergedRoutes, mergerRoute)
+	}
+	return mergedRoutes
+}
+
 func (w *Worker) handler(t interface{}) {
 	item := t.(Item)
 	db := w.dbpool[item.index%len(w.dbpool)]
 	paths := database.QueryRouteWithMaxJump(db, item.token0, item.token1, item.maxOp)
 	//paths := make([]*types.TokenRoute, 0)
 	log.Infof("got token path %d", len(paths))
-	if len(paths) > w.maxroute {
-		sort.Sort(types.SortTokenRoutes(paths))
-		paths = paths[:w.maxroute]
-	}
+	paths = w.trimRoutes(paths)
+	paths = w.MergeRoutes(paths)
+
 	data := convertPathToString(paths)
 	for _, str := range data {
 		item.response <- str
