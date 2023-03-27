@@ -147,7 +147,10 @@ func ImportHandler(db *norm.DB, datafile string, url string) error {
 
 		_ = database.InsertToken(db, name0, pair.Token0.Address)
 		_ = database.InsertToken(db, name1, pair.Token1.Address)
+		// token0 -> token1
 		_ = database.InsertPair(db, dexName, pair.Address, dexInfo.Fee, pair.TrackedValue, pair.Token0.Address, pair.Token1.Address)
+		// and support token1 -> token0
+		_ = database.InsertPair(db, dexName, pair.Address, dexInfo.Fee, pair.TrackedValue, pair.Token1.Address, pair.Token0.Address)
 	}
 	//for _, dex := range dexlist {
 	//	for _, pair := range dex.Pairs {

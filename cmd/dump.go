@@ -49,7 +49,6 @@ var dumpCmd = &cobra.Command{
 	Use:   "dump",
 	Short: "Dump all route for given token pairs",
 	Run: func(cmd *cobra.Command, args []string) {
-		db := database.NewDb(config.GetConfig())
 		tokenMap := make(map[string]bool)
 		tokenList := make([]string, 0)
 		for _, datafile := range args {
@@ -83,7 +82,7 @@ var dumpCmd = &cobra.Command{
 		op, _ := cmd.PersistentFlags().GetInt(maxOpFlag)
 		routine, _ := cmd.PersistentFlags().GetUint(routineFlag)
 
-		if err := DumpHandler(db, routine, tokenList, output, op); err != nil {
+		if err := DumpHandler(routine, tokenList, output, op); err != nil {
 			log.Errorf("dump token route failed with err:(%s)", err)
 		} else {
 			log.Info("dump token route finished")
@@ -123,43 +122,51 @@ func convertPathToString(routes []*types.TokenRoute) []string {
 
 }
 
-func DumpHandler(db *norm.DB, routine uint, tokens []string, dumpfile string, maxOp int) error {
-	worker := NewWorker(db, routine)
+func DumpHandler(routine uint, tokens []string, dumpfile string, maxOp int) error {
+	worker := NewWorker(routine)
 	worker.Start()
 	return worker.DumpRouteToFile(dumpfile, tokens, maxOp)
 }
 
 type Worker struct {
-	task *tool.Tasks
-	db   *norm.DB
+	task   *tool.Tasks
+	dbpool []*norm.DB
 }
 
-func NewWorker(db *norm.DB, rountines uint) *Worker {
-	task := tool.NewTasks(rountines, func(t interface{}) {
-		item := t.(Item)
-		//log.Infof("got task item %s->%s", item.token0, item.token1)
-		paths := database.QueryRouteWithMaxJump(db, item.token0, item.token1, item.maxOp)
-		//log.Infof("got token path %d", len(paths))
-		data := convertPathToString(paths)
-		for _, str := range data {
-			item.response <- str
-			//log.Infof("write route to response")
-		}
-	})
-	return &Worker{task: task}
+func NewWorker(rountines uint) *Worker {
+	w := new(Worker)
+	task := tool.NewTasks(rountines, w.handler)
+	w.task = task
+	w.dbpool = make([]*norm.DB, int(rountines))
+	for i := 0; i < int(rountines); i++ {
+		w.dbpool[i] = database.NewDb(config.GetConfig())
+	}
+	return w
 }
 
-func (w Worker) Start() {
+func (w *Worker) handler(t interface{}) {
+	item := t.(Item)
+	db := w.dbpool[item.index%len(w.dbpool)]
+	paths := database.QueryRouteWithMaxJump(db, item.token0, item.token1, item.maxOp)
+	log.Infof("got token path %d", len(paths))
+	data := convertPathToString(paths)
+	for _, str := range data {
+		item.response <- str
+	}
+}
+
+func (w *Worker) Start() {
 	w.task.Run()
 }
 
 type Item struct {
 	token0, token1 string
 	maxOp          int
+	index          int
 	response       chan interface{}
 }
 
-func (w Worker) DumpRouteToFile(dumpfile string, tokens []string, maxOp int) error {
+func (w *Worker) DumpRouteToFile(dumpfile string, tokens []string, maxOp int) error {
 	fp, err := os.OpenFile(dumpfile, os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModeAppend|os.ModePerm) // 读写方式打开
 	if err != nil {
 		log.WithField("err", err).WithField("file", dumpfile).Error("open file failed")
@@ -183,7 +190,7 @@ func (w Worker) DumpRouteToFile(dumpfile string, tokens []string, maxOp int) err
 				}
 				_, err = fp.WriteString(s)
 				count += 1
-				if (count % 200) == 0 {
+				if (count % 20) == 0 {
 					log.Infof("write to file count %d", count)
 					fp.Sync()
 				}
