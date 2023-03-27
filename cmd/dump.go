@@ -154,11 +154,13 @@ func (w *Worker) handler(t interface{}) {
 	item := t.(Item)
 	db := w.dbpool[item.index%len(w.dbpool)]
 	paths := database.QueryRouteWithMaxJump(db, item.token0, item.token1, item.maxOp)
+	//paths := make([]*types.TokenRoute, 0)
 	log.Infof("got token path %d", len(paths))
 	data := convertPathToString(paths)
 	for _, str := range data {
 		item.response <- str
 	}
+	close(item.response)
 }
 
 func (w *Worker) Start() {
@@ -229,12 +231,14 @@ func (w *Worker) DumpRouteToFile(dumpfile string, tokens []string, maxOp int) er
 				if e := w.task.AddTask(item); e != nil {
 					err = e
 				} else {
-					data := <-res
-					switch msg := (data).(type) {
-					case error:
-						err = msg
-					case string:
-						results <- msg
+					for {
+						select {
+						case data, ok := <-res:
+							if !ok {
+								return
+							}
+							results <- data.(string)
+						}
 					}
 				}
 			}(tokens[i], tokens[j], maxOp)
