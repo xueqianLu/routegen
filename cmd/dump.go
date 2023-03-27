@@ -34,14 +34,16 @@ import (
 	"github.com/zhihu/norm"
 	"io/ioutil"
 	"os"
+	"sort"
 	"sync"
 	"time"
 )
 
 const (
-	outputFlag  = "out"
-	maxOpFlag   = "op"
-	routineFlag = "routine"
+	outputFlag    = "out"
+	maxOpFlag     = "op"
+	routineFlag   = "routine"
+	maxRoutesFlag = "max-steps"
 )
 
 // dumpCmd represents the dump command
@@ -78,11 +80,8 @@ var dumpCmd = &cobra.Command{
 		for token, _ := range tokenMap {
 			tokenList = append(tokenList, token)
 		}
-		output, _ := cmd.PersistentFlags().GetString(outputFlag)
-		op, _ := cmd.PersistentFlags().GetInt(maxOpFlag)
-		routine, _ := cmd.PersistentFlags().GetUint(routineFlag)
 
-		if err := DumpHandler(routine, tokenList, output, op); err != nil {
+		if err := DumpHandler(cmd, tokenList); err != nil {
 			log.Errorf("dump token route failed with err:(%s)", err)
 		} else {
 			log.Info("dump token route finished")
@@ -94,6 +93,7 @@ func init() {
 	rootCmd.AddCommand(dumpCmd)
 	dumpCmd.PersistentFlags().String(outputFlag, "dump.txt", "out put filename")
 	dumpCmd.PersistentFlags().Int(maxOpFlag, 4, "max jump for token swap route")
+	dumpCmd.PersistentFlags().Int(maxRoutesFlag, 10, "max routes flag")
 	dumpCmd.PersistentFlags().Uint(routineFlag, 5, "routine count to dump route file")
 }
 
@@ -141,21 +141,28 @@ func convertPathToString(routes []*types.TokenRoute) []string {
 
 }
 
-func DumpHandler(routine uint, tokens []string, dumpfile string, maxOp int) error {
-	worker := NewWorker(routine)
+func DumpHandler(cmd *cobra.Command, tokens []string) error {
+	dumpfile, _ := cmd.PersistentFlags().GetString(outputFlag)
+	maxOp, _ := cmd.PersistentFlags().GetInt(maxOpFlag)
+	routine, _ := cmd.PersistentFlags().GetUint(routineFlag)
+	maxroutes, _ := cmd.PersistentFlags().GetInt(maxRoutesFlag)
+
+	worker := NewWorker(routine, maxroutes)
 	worker.Start()
 	return worker.DumpRouteToFile(dumpfile, tokens, maxOp)
 }
 
 type Worker struct {
-	task   *tool.Tasks
-	dbpool []*norm.DB
+	task     *tool.Tasks
+	maxroute int
+	dbpool   []*norm.DB
 }
 
-func NewWorker(rountines uint) *Worker {
+func NewWorker(rountines uint, maxroute int) *Worker {
 	w := new(Worker)
 	task := tool.NewTasks(rountines, w.handler)
 	w.task = task
+	w.maxroute = maxroute
 	w.dbpool = make([]*norm.DB, int(rountines))
 	for i := 0; i < int(rountines); i++ {
 		w.dbpool[i] = database.NewDb(config.GetConfig())
@@ -169,6 +176,10 @@ func (w *Worker) handler(t interface{}) {
 	paths := database.QueryRouteWithMaxJump(db, item.token0, item.token1, item.maxOp)
 	//paths := make([]*types.TokenRoute, 0)
 	log.Infof("got token path %d", len(paths))
+	if len(paths) > w.maxroute {
+		sort.Sort(types.SortTokenRoutes(paths))
+		paths = paths[:w.maxroute]
+	}
 	data := convertPathToString(paths)
 	for _, str := range data {
 		item.response <- str

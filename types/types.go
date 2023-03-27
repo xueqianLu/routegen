@@ -42,3 +42,9 @@ type RouteStep struct {
 type TokenRoute struct {
 	Steps []RouteStep `json:"steps"`
 }
+
+type SortTokenRoutes []*TokenRoute
+
+func (s SortTokenRoutes) Len() int           { return len(s) }
+func (s SortTokenRoutes) Less(i, j int) bool { return len(s[i].Steps) < len(s[j].Steps) }
+func (s SortTokenRoutes) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }

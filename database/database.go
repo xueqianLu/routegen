@@ -259,7 +259,7 @@ func QueryRouteWithMaxJump(db *norm.DB, token0, token1 string, op int) []*types.
 }
 
 func mergeRoute(mergedRoute *types.TokenRoute, otherRoute []*types.TokenRoute) {
-
+	
 }
 
 func MergeRoutes(allroute []*types.TokenRoute) {
