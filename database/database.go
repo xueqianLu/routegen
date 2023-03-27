@@ -164,15 +164,18 @@ func GetDstFromStep(step *nebula.Step) string {
 }
 
 func GetPairInfoFromStep(step *nebula.Step, routeStep *types.RouteStep) {
+	Pairs := make([]types.RoutePairInfo, 1)
+
 	if dex, exist := step.Props[PairProp_dex]; exist {
-		routeStep.Dex = getValueofValue(dex)
+		Pairs[0].Dex = getValueofValue(dex)
 	}
 	if pairAddr, exist := step.Props[PairProp_paircontract]; exist {
-		routeStep.Pair = getValueofValue(pairAddr)
+		Pairs[0].Pair = getValueofValue(pairAddr)
 	}
 	if fee, exist := step.Props[PairProp_fee]; exist {
-		routeStep.Fee = getValueofValue(fee)
+		Pairs[0].Fee = getValueofValue(fee)
 	}
+	routeStep.Pairs = Pairs
 }
 
 func ParsePathInfo(path *nebula.Path) []types.RouteStep {
@@ -253,4 +256,12 @@ func QueryRouteWithMaxJump(db *norm.DB, token0, token1 string, op int) []*types.
 		}
 		return paths
 	}
+}
+
+func mergeRoute(mergedRoute *types.TokenRoute, otherRoute []*types.TokenRoute) {
+
+}
+
+func MergeRoutes(allroute []*types.TokenRoute) {
+
 }

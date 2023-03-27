@@ -51,10 +51,10 @@ to quickly create a Cobra application.`,
 			route := fmt.Sprintf("path[%d]=", i)
 			for n, step := range path.Steps {
 				if n == 0 {
-					str := fmt.Sprintf("%s ---(%s:%s:%s)---> %s", step.Src, step.Dex, step.Pair, step.Fee, step.Dst)
+					str := fmt.Sprintf("%s ---(%s:%s:%s)---> %s", step.Src, step.Pairs[0].Dex, step.Pairs[0].Pair, step.Pairs[0].Fee, step.Dst)
 					route += str
 				} else {
-					str := fmt.Sprintf(" ---(%s:%s:%s)---> %s", step.Dex, step.Pair, step.Fee, step.Dst)
+					str := fmt.Sprintf(" ---(%s:%s:%s)---> %s", step.Pairs[0].Dex, step.Pairs[0].Pair, step.Pairs[0].Fee, step.Dst)
 					route += str
 				}
 			}

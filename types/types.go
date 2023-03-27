@@ -21,12 +21,22 @@ THE SOFTWARE.
 */
 package types
 
-type RouteStep struct {
+import "fmt"
+
+type RoutePairInfo struct {
 	Pair string `json:"pair"`
-	Dex  string `json:"dex"`
-	Src  string `json:"from"`
-	Dst  string `json:"to"`
 	Fee  string `json:"fee"`
+	Dex  string `json:"dex"`
+}
+
+func TextAddress(addr string) string {
+	return fmt.Sprintf("\"%s\"", addr)
+}
+
+type RouteStep struct {
+	Pairs []RoutePairInfo `json:"pair"`
+	Src   string          `json:"from"`
+	Dst   string          `json:"to"`
 }
 
 type TokenRoute struct {

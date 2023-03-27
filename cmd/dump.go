@@ -97,6 +97,19 @@ func init() {
 	dumpCmd.PersistentFlags().Uint(routineFlag, 5, "routine count to dump route file")
 }
 
+func getPairInfoText(step types.RouteStep) string {
+	pairs := ""
+	for i, pair := range step.Pairs {
+		if i == 0 {
+			pairs += types.TextAddress(pair.Pair)
+		} else {
+			pairs += ","
+			pairs += types.TextAddress(pair.Pair)
+		}
+	}
+	return fmt.Sprintf("[%s]", pairs)
+}
+
 func convertPathToString(routes []*types.TokenRoute) []string {
 	paths := make([]string, 0)
 	for _, route := range routes {
@@ -105,17 +118,17 @@ func convertPathToString(routes []*types.TokenRoute) []string {
 		// ["","",""]
 		for i, step := range route.Steps {
 			if i == 0 {
-				p := fmt.Sprintf("\"%s\"", step.Pair)
+				p := fmt.Sprintf("%s", getPairInfoText(step))
 				pair += p
 			} else {
-				p := fmt.Sprintf(",\"%s\"", step.Pair)
+				p := fmt.Sprintf(",%s", getPairInfoText(step))
 				pair += p
 			}
 			if i == 0 {
-				t := fmt.Sprintf("\"%s\", \"%s\"", step.Src, step.Dst)
+				t := fmt.Sprintf("%s, %s", types.TextAddress(step.Src), types.TextAddress(step.Dst))
 				tokens += t
 			} else {
-				t := fmt.Sprintf(", \"%s\"", step.Dst)
+				t := fmt.Sprintf(", %s", step.Dst)
 				tokens += t
 			}
 		}
