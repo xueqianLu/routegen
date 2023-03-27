@@ -105,17 +105,23 @@ func convertPathToString(routes []*types.TokenRoute) []string {
 		// ["","",""]
 		for i, step := range route.Steps {
 			if i == 0 {
-				pair += step.Pair
+				p := fmt.Sprintf("\"%s\"", step.Pair)
+				pair += p
 			} else {
-				pair += ","
-				pair += step.Pair
+				p := fmt.Sprintf(",\"%s\"", step.Pair)
+				pair += p
 			}
-			t := fmt.Sprintf("[\"%s\",\"%s\"],", step.Src, step.Dst)
-			tokens += t
+			if i == 0 {
+				t := fmt.Sprintf("\"%s\", \"%s\"", step.Src, step.Dst)
+				tokens += t
+			} else {
+				t := fmt.Sprintf(", \"%s\"", step.Dst)
+				tokens += t
+			}
 		}
-		tokens = tokens[:len(tokens)-1]
+		fullpath := fmt.Sprintf("[%s]", tokens)
 		pair += "]"
-		path := fmt.Sprintf("[%s,%s]\n", pair, tokens)
+		path := fmt.Sprintf("[%s,%s]\n", pair, fullpath)
 		paths = append(paths, path)
 	}
 	return paths
