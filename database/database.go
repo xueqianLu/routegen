@@ -10,6 +10,9 @@ import (
 	"github.com/zhihu/norm"
 	"github.com/zhihu/norm/constants"
 	"github.com/zhihu/norm/dialectors"
+	"golang.org/x/crypto/sha3"
+	"math/big"
+	"strings"
 	"time"
 )
 
@@ -37,13 +40,24 @@ func InsertToken(db *norm.DB, name string, address string) error {
 	return err
 }
 
+func pairRank(dexname string, pairaddr string, fee string, tracked string, token0, token1 string) int {
+	content := strings.Join([]string{dexname, pairaddr, fee, tracked, token0, token1}, "")
+	hash := sha3.Sum256([]byte(content))
+	rank := new(big.Int)
+	rank.SetBytes(hash[:])
+	rankTrim := rank.Uint64() % 1000000
+	return int(rankTrim)
+}
+
 func InsertPair(db *norm.DB, dexname string, pairaddr string, fee string, tracked string, token0, token1 string) error {
+	rank := pairRank(dexname, pairaddr, fee, tracked, token0, token1)
 	pair := &models.Pair{
 		EModel: norm.EModel{
 			Src:       token0,
 			SrcPolicy: constants.PolicyNothing,
 			Dst:       token1,
 			DstPolicy: constants.PolicyNothing,
+			Rank:      rank,
 		},
 		DexName:       dexname,
 		Token1:        token1,
@@ -54,7 +68,9 @@ func InsertPair(db *norm.DB, dexname string, pairaddr string, fee string, tracke
 	}
 	err := db.InsertEdge(pair)
 	if err != nil {
-		log.WithField("err", err).Error("insert pair failed")
+		log.WithField("err", err).WithField("pair", pairaddr).Error("insert pair failed")
+	} else {
+		log.WithField("pair", pairaddr).Error("insert pair success")
 	}
 	return err
 }
@@ -259,7 +275,7 @@ func QueryRouteWithMaxJump(db *norm.DB, token0, token1 string, op int) []*types.
 }
 
 func mergeRoute(mergedRoute *types.TokenRoute, otherRoute []*types.TokenRoute) {
-	
+
 }
 
 func MergeRoutes(allroute []*types.TokenRoute) {
