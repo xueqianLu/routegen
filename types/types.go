@@ -21,7 +21,10 @@ THE SOFTWARE.
 */
 package types
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type RoutePairInfo struct {
 	Pair string `json:"pair"`
@@ -41,6 +44,11 @@ type RouteStep struct {
 
 type TokenRoute struct {
 	Steps []RouteStep `json:"steps"`
+}
+
+func (r TokenRoute) String() string {
+	d, _ := json.Marshal(r)
+	return string(d)
 }
 
 type SortTokenRoutes []*TokenRoute

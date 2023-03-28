@@ -128,7 +128,7 @@ func convertPathToString(routes []*types.TokenRoute) []string {
 				t := fmt.Sprintf("%s, %s", types.TextAddress(step.Src), types.TextAddress(step.Dst))
 				tokens += t
 			} else {
-				t := fmt.Sprintf(", %s", step.Dst)
+				t := fmt.Sprintf(", %s", types.TextAddress(step.Dst))
 				tokens += t
 			}
 		}
@@ -208,6 +208,7 @@ func (w *Worker) mergeRoute(mergedRoute *types.TokenRoute, otherRoutes []*types.
 			}
 
 			if merged {
+				log.Infof("merge route (%s) and (%s)", mergedRoute.String(), otherRoute.String())
 				otherRoutes[i] = otherRoutes[otherLen-1]
 				otherRoutes = otherRoutes[:otherLen-1]
 			} else {
@@ -222,9 +223,9 @@ func (w *Worker) mergeRoute(mergedRoute *types.TokenRoute, otherRoutes []*types.
 
 func (w *Worker) MergeRoutes(paths []*types.TokenRoute) []*types.TokenRoute {
 	mergedRoutes := make([]*types.TokenRoute, 0)
-	for index := 0; index < len(paths); index++ {
-		mergerRoute := paths[index]
-		paths = w.mergeRoute(mergerRoute, paths[index+1:])
+	for len(paths) > 0 {
+		mergerRoute := paths[0]
+		paths = w.mergeRoute(mergerRoute, paths[1:])
 		mergedRoutes = append(mergedRoutes, mergerRoute)
 	}
 	return mergedRoutes
