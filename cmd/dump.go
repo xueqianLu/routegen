@@ -170,9 +170,13 @@ func NewWorker(rountines uint, maxroute int) *Worker {
 	return w
 }
 
+func (w *Worker) sortRoutes(paths []*types.TokenRoute) []*types.TokenRoute {
+	sort.Sort(types.SortTokenRoutes(paths))
+	return paths
+}
+
 func (w *Worker) trimRoutes(paths []*types.TokenRoute) []*types.TokenRoute {
 	if len(paths) > w.maxroute {
-		sort.Sort(types.SortTokenRoutes(paths))
 		paths = paths[:w.maxroute]
 	}
 	return paths
@@ -231,16 +235,64 @@ func (w *Worker) MergeRoutes(paths []*types.TokenRoute) []*types.TokenRoute {
 	return mergedRoutes
 }
 
+func (w *Worker) filterRouteWith(used *types.TokenRoute, next *types.TokenRoute) *types.TokenRoute {
+	usedPair := make(map[string]bool)
+	for _, s := range used.Steps {
+		for _, p := range s.Pairs {
+			usedPair[p.Pair] = true
+		}
+	}
+	invalid := false
+	for _, s := range next.Steps {
+		npairs := make([]types.RoutePairInfo, 0)
+		for _, p := range s.Pairs {
+			// filter not used pair
+			if usedPair[p.Pair] != true {
+				npairs = append(npairs, p)
+			}
+		}
+		if len(npairs) == 0 {
+			invalid = true
+			break
+		}
+	}
+	if invalid {
+		return nil
+	}
+	return next
+}
+
+func (w *Worker) FilterRoutes(paths []*types.TokenRoute, index int) []*types.TokenRoute {
+	if index >= (len(paths) - 1) {
+		return paths
+	}
+	filterRoutes := make([]*types.TokenRoute, 0)
+	used := paths[index]
+	filterRoutes = append(filterRoutes, used)
+	paths = paths[index+1:]
+
+	for i := 0; i < len(paths); i++ {
+		nf := w.filterRouteWith(used, paths[i])
+		if nf != nil {
+			filterRoutes = append(filterRoutes, nf)
+		}
+	}
+
+	return w.FilterRoutes(filterRoutes, index+1)
+}
+
 func (w *Worker) handler(t interface{}) {
 	item := t.(Item)
 	db := w.dbpool[item.index%len(w.dbpool)]
 	paths := database.QueryRouteWithMaxJump(db, item.token0, item.token1, item.maxOp)
 	//paths := make([]*types.TokenRoute, 0)
 	log.Infof("got token path %d", len(paths))
-	paths = w.trimRoutes(paths)
-	paths = w.MergeRoutes(paths)
+	sorted := w.sortRoutes(paths)
+	filter := w.FilterRoutes(sorted, 0)
+	trimed := w.trimRoutes(filter)
+	merged := w.MergeRoutes(trimed)
 
-	data := convertPathToString(paths)
+	data := convertPathToString(merged)
 	for _, str := range data {
 		item.response <- str
 	}
