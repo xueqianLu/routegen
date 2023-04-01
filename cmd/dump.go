@@ -188,6 +188,21 @@ func TransferTokenEqual(sa, sb types.RouteStep) bool {
 	return (sa.Src == sb.Src) && (sa.Dst == sb.Dst)
 }
 
+func mergePair(n1 []types.RoutePairInfo, n2 []types.RoutePairInfo) []types.RoutePairInfo {
+	m := make(map[string]types.RoutePairInfo)
+	for _, pair := range n1 {
+		m[pair.Pair] = pair
+	}
+	for _, pair := range n2 {
+		m[pair.Pair] = pair
+	}
+	merge := make([]types.RoutePairInfo, 0, len(m))
+	for _, v := range m {
+		merge = append(merge, v)
+	}
+	return merge
+}
+
 func (w *Worker) mergeRoute(mergedRoute *types.TokenRoute, otherRoutes []*types.TokenRoute) []*types.TokenRoute {
 	for i := 0; i < len(otherRoutes); {
 		otherLen := len(otherRoutes)
@@ -205,7 +220,7 @@ func (w *Worker) mergeRoute(mergedRoute *types.TokenRoute, otherRoutes []*types.
 				}
 				if equalSrcDst {
 					for idx := 0; idx < len(mergedRoute.Steps); idx++ {
-						mergedRoute.Steps[idx].Pairs = append(mergedRoute.Steps[idx].Pairs, otherRoute.Steps[idx].Pairs...)
+						mergedRoute.Steps[idx].Pairs = mergePair(mergedRoute.Steps[idx].Pairs, otherRoute.Steps[idx].Pairs)
 					}
 					merged = true
 				}
@@ -288,11 +303,11 @@ func (w *Worker) handler(t interface{}) {
 	//paths := make([]*types.TokenRoute, 0)
 	log.Infof("got token path %d", len(paths))
 	sorted := w.sortRoutes(paths)
-	filter := w.FilterRoutes(sorted, 0)
+	merged := w.MergeRoutes(sorted)
+	filter := w.FilterRoutes(merged, 0)
 	trimed := w.trimRoutes(filter)
-	merged := w.MergeRoutes(trimed)
 
-	data := convertPathToString(merged)
+	data := convertPathToString(trimed)
 	for _, str := range data {
 		item.response <- str
 	}
